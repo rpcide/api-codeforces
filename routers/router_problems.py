@@ -1,8 +1,8 @@
 from typing import Union
 from fastapi import APIRouter, HTTPException, status
-from src.models.problem import Problem
+from models.problem import Problem
 
-from src.scrapper.get_problem import get_problem_content
+from scrapper.get_problem import get_problem_content
 
 router = APIRouter(prefix="/problems")
 

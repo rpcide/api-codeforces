@@ -2,7 +2,7 @@ from typing import List, Union
 import requests
 from bs4 import BeautifulSoup
 
-from src.models.problem import Problem
+from models.problem import Problem
 
 def get_problem_inputs(soup: BeautifulSoup) -> List[str]:
     inputs = soup.find_all("div", class_="test-example-line")

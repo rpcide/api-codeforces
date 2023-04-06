@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.routers.router_problems import router as router_problems
+from routers.router_problems import router as router_problems
 
 router = APIRouter()
 

@@ -3,3 +3,4 @@ python-multipart
 python-dotenv
 requests
 beautifulsoup4
+uvicorn

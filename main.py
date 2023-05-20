@@ -6,6 +6,7 @@ from core.config import settings
 from core.cors import origins
 from routers.base import router
 
+
 def start_application():
     app = FastAPI(title=settings.PROJECT_NAME,
                   version=settings.PROJECT_VERSION)
@@ -20,6 +21,7 @@ def start_application():
 
     app.include_router(router)
     return app
+
 
 app = start_application()
 

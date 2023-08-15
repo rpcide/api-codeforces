@@ -6,9 +6,10 @@ from models.problem import Example, Problem
 
 
 def format_values(value) -> List[str]:
-    input_problem = str(value).replace("<pre>", "").replace("</pre>", "")
-    result = input_problem.split("<br/>")
-    result = list(map(lambda x : x.strip(), result))
+    input_problem = str(value).replace("<pre>", "").replace(
+        "</pre>", "").replace("<br/>", "\n")
+    result = list(input_problem.split("\n"))
+    result = list(map(lambda x: x.strip(), result))
     return list(filter(lambda val: len(val) > 0, result))
 
 

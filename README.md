@@ -3,7 +3,7 @@
 ## Start
 
 1. Install dependencies `pip install -r requirements.txt`
-2. Run `uvicorn src.main:app --reload`
+2. Run `uvicorn main:app --reload`
 
 
 ## Routes

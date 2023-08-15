@@ -2,23 +2,14 @@ from typing import List, Union
 import requests
 from bs4 import BeautifulSoup
 
-from models.problem import Problem
+from models.problem import Example, Problem
 
-def get_problem_inputs(soup: BeautifulSoup) -> List[str]:
-    inputs = soup.find_all("div", class_="test-example-line")
-    result = []
-    
-    for i in inputs:
-        result.append(i.text)
-        
-    return result
 
-def get_problem_outputs(soup: BeautifulSoup) -> List[str]:
-    output_container = soup.find("div", class_="output")
-    out = output_container.find("pre").text
-    out_splited = list(out.split("\n"))
-    result = list(filter(lambda x : len(x)>0, out_splited))
-    return result
+def format_values(value) -> List[str]:
+    input_problem = str(value).replace("<pre>", "").replace("</pre>", "")
+    result = input_problem.split("<br/>")
+    result = list(map(lambda x : x.strip(), result))
+    return list(filter(lambda val: len(val) > 0, result))
 
 
 def get_title(soup: BeautifulSoup) -> str:
@@ -45,15 +36,35 @@ def get_output_specification(soup: BeautifulSoup) -> str:
 def get_tags(soup: BeautifulSoup) -> List[str]:
     tags_content = soup.find_all("span", class_="tag-box")
     result = []
-    
+
     for i in tags_content:
         result.append(i.text.strip())
-        
+
     return result
 
 
+def get_examples(soup: BeautifulSoup) -> List[Example]:
+    examples: List[Example] = []
+
+    examples_container = soup.find("div", class_="sample-test")
+
+    children = examples_container.findChildren("div", recursive=False)
+
+    for i in range(0, len(children), 2):
+        input_problem = children[i].find("pre")
+        output_problem = children[i+1].find("pre")
+
+        examples.append(
+            Example(input=format_values(input_problem),
+                    output=format_values(output_problem)
+                    )
+        )
+
+    return examples
+
+
 def get_problem_content(url: str) -> Union[Problem, None]:
-    headers={
+    headers = {
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0"
     }
     r = requests.get(url, headers=headers)
@@ -70,8 +81,7 @@ def get_problem_content(url: str) -> Union[Problem, None]:
         url=r.url,
         name=get_title(soup),
         content=get_content(soup),
-        input=get_problem_inputs(soup), 
-        output=get_problem_outputs(soup),
+        examples=get_examples(soup),
         input_specification=get_input_specification(soup),
         output_specification=get_output_specification(soup),
         tags=get_tags(soup)
